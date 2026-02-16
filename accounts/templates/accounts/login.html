@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login | BookMyDoctor</title>
+    <link rel="icon" href="https://www.hhaexchange.com/wp-content/uploads/2023/02/CareConnect_LogoRefresh_Final_Stacked_NoTagline-1920x1200.png">
+
+    <style>
+        body {
+            background:whitesmoke;
+            font-family: monospace;
+        }
+        .login-box {
+            width: 400px;
+            margin: 80px auto;
+            text-align: center;
+
+        }
+        label {
+            display: block;
+            text-align: left;
+            margin-left: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0 15px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: black;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .terms-btn {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: #ccc;
+            color: black;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .terms-btn.accepted {
+            background: #0aa63f;
+            color: white;
+        }
+        a {
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+        }
+        p {
+            margin-top: 10px;
+        }
+        .error {
+            color: red;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-box">
+    <h1>Welcome to CareConnect</h1>
+    {% if messages %}
+    {% for message in messages %}
+        <div class="error">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="m@example.com" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+        <!-- Terms & Conditions Button -->
+        <button type="button" id="termsBtn" class="terms-btn">Terms & Conditions Accepted</button>
+
+        <!-- Login Button -->
+         <br>
+        <button type="submit" id="loginBtn">Login</button>
+    </form>
+
+    <p>
+        Don’t have an account?
+        <a href="{% url 'accounts:register' %}">Sign up here</a>
+    </p>
+</div>
+
+<script>
+    const termsBtn = document.getElementById('termsBtn');
+
+    // Toggle accept terms button
+    let accepted = false;
+    termsBtn.addEventListener('click', () => {
+        accepted = !accepted;
+        termsBtn.classList.toggle('accepted', accepted);
+    });
+
+    // Prevent login if terms not accepted
+    document.querySelector('form').addEventListener('submit', (e) => {
+        if(!accepted) {
+            e.preventDefault();
+            alert("You must accept the Terms & Conditions before logging in.");
+        }
+    });
+</script>
+
+</body>
+</html>

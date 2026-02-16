@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registration Complete</title>
+<link rel="icon" href="https://www.hhaexchange.com/wp-content/uploads/2023/02/CareConnect_LogoRefresh_Final_Stacked_NoTagline-1920x1200.png">
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#f3f4f6;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+}
+
+.success-box{
+    max-width:500px;
+    background:#ffffff;
+    padding:50px 40px;
+    border-radius:24px;
+    box-shadow:0 20px 45px rgba(0,0,0,0.08);
+    text-align:center;
+}
+
+.success-icon{
+    width:80px;
+    height:80px;
+    background:linear-gradient(135deg, #10b981, #059669);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 24px;
+    animation:scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn{
+    0%{
+        transform:scale(0);
+    }
+    50%{
+        transform:scale(1.1);
+    }
+    100%{
+        transform:scale(1);
+    }
+}
+
+.checkmark{
+    width:40px;
+    height:40px;
+    border:3px solid #ffffff;
+    border-top:none;
+    border-right:none;
+    transform:rotate(-45deg);
+    margin-bottom:8px;
+}
+
+.success-box h1{
+    font-size:28px;
+    font-weight:600;
+    color:#111827;
+    margin-bottom:12px;
+}
+
+.success-box p{
+    font-size:15px;
+    color:#6b7280;
+    line-height:1.6;
+    margin-bottom:32px;
+}
+
+.info-box{
+    background:#f3f4f6;
+    padding:20px;
+    border-radius:16px;
+    margin-bottom:28px;
+    text-align:left;
+}
+
+.info-box h3{
+    font-size:14px;
+    font-weight:600;
+    color:#111827;
+    margin-bottom:12px;
+}
+
+.info-box ul{
+    list-style:none;
+    font-size:14px;
+    color:#374151;
+    line-height:1.8;
+}
+
+.info-box li{
+    padding-left:20px;
+    position:relative;
+}
+
+.info-box li::before{
+    content:'✓';
+    position:absolute;
+    left:0;
+    color:#10b981;
+    font-weight:bold;
+}
+
+.btn{
+    display:inline-block;
+    padding:14px 32px;
+    background:linear-gradient(180deg,#111827,#030712);
+    color:#ffffff;
+    text-decoration:none;
+    border-radius:14px;
+    font-size:15px;
+    font-weight:500;
+    transition:0.25s;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 12px 28px rgba(0,0,0,0.25);
+}
+</style>
+</head>
+
+<body>
+
+<div class="success-box">
+    <div class="success-icon">
+        <div class="checkmark"></div>
+    </div>
+    
+    <h1>Registration Complete!</h1>
+    <p>Thank you for registering. Your application has been submitted successfully and is under review.</p>
+    
+    <div class="info-box">
+        <h3>What happens next?</h3>
+        <ul>
+            <li>Admin will review your credentials</li>
+            <li>Verification typically takes 24-48 hours</li>
+            <li>You'll receive an email notification</li>
+            <li>Once approved, you can start accepting patients</li>
+        </ul>
+    </div>
+    
+    <a href="/" class="btn">Go to Dashboard</a>
+</div>
+
+</body>
+</html>
