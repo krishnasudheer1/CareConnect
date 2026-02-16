@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config  # ✅ ADD THIS - For environment variables
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'django-insecure-&q03j6a4=ls7!*2t-*zln9)$c25&ma^o6y$l3l+32se&yn9knd'
-SECRET_KEY = 'h97=)lhyc$rjg(j#-@rzfxq3sgpi*oj++65!41rxjz)sgemy2e'
-
+SECRET_KEY = config('SECRET_KEY', default='h97=)lhyc$rjg(j#-@rzfxq3sgpi*oj++65!41rxjz)sgemy2e')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = ['*']
 
@@ -80,24 +80,26 @@ TEMPLATES = [
 WSGI_APPLICATION = 'careconnect.wsgi.application'
 
 
-# Database
+# Database Configuration
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-import dj_database_url
-
+# ✅ FOR PYTHONANYWHERE: Uses DATABASE_URL from environment
+# ✅ FOR LOCAL DEVELOPMENT: Uses settings below
 if 'DATABASE_URL' in os.environ:
+    # This runs on PythonAnywhere - database URL set in WSGI file
     DATABASES = {
         'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
     }
 else:
+    # This runs locally - use your local MySQL
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'careconnect',
-            'USER': 'root',
-            'PASSWORD': '1234',
-            'HOST': 'localhost',
-            'PORT': '3306',
+            'NAME': config('DB_NAME', default='careconnect'),
+            'USER': config('DB_USER', default='root'),
+            'PASSWORD': config('DB_PASSWORD', default='1234'),
+            'HOST': config('DB_HOST', default='localhost'),
+            'PORT': config('DB_PORT', default='3306'),
         }
     }
 
@@ -137,7 +139,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'  # ✅ FIXED: Added leading slash
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
@@ -146,16 +148,30 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+
 MEDIA_ROOT = BASE_DIR / 'media'
-MEDIA_URL='/media/'
-EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST_USER='krishnasudheerkommula@gmail.com'
-EMAIL_HOST='smtp.gmail.com'
-EMAIL_PORT=587
-EMAIL_USE_TLS=True
-EMAIL_HOST_PASSWORD='mnzknzansemm kojg'
+MEDIA_URL = '/media/'
+
+# Email Configuration
+# ✅ UPDATED: Now uses environment variables for security
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='krishnasudheerkommula@gmail.com')
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='mnzknzansemm kojg')
+
+# Login/Logout URLs
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/login/'
-DEFAULT_FROM_EMAIL='krishnasudheerkommula@gmail.com'
+
+DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER', default='krishnasudheerkommula@gmail.com')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# ✅ OPTIONAL: Security settings for production (can enable later)
+# Uncomment these when you have SSL certificate on PythonAnywhere
+# SECURE_SSL_REDIRECT = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
