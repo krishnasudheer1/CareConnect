@@ -122,31 +122,31 @@ def deletepat(request):
 @login_required
 def createpat(request):
     if request.method == 'POST':        
+        image = None
         try:
             _, file = request.FILES.popitem()
             file = file[0]
             image = file
         except:
             pass
-        finally:
-            fname = request.POST['name']
-            email = request.POST['email']
-            phone = request.POST['phone']
-            gender = request.POST['gender']
-            age = request.POST['age']
-            add = request.POST['address']
-            bg = request.POST['bloodgroup']
-            casepaper = request.POST['casepaper']
-            if User.objects.filter(username=email).exists():
-                messages.info(request, "Email Id already Exists!")
-                return redirect('crtpat')
-            else:
-                user = User.objects.create_user(first_name=fname, last_name='Patient', username=email, email=email)
-                pro = Patient(user=user, phone=phone, gender=gender, age=age, address=add, bloodgroup=bg, casepaper=casepaper, image=image)
-                pro.save()
-                return redirect('reception')
+        
+        fname = request.POST['name']
+        email = request.POST['email']
+        phone = request.POST['phone']
+        gender = request.POST['gender']
+        age = request.POST['age']
+        add = request.POST['address']
+        bg = request.POST['bloodgroup']
+        casepaper = request.POST['casepaper']
+        if User.objects.filter(username=email).exists():
+            messages.info(request, "Email Id already Exists!")
+            return redirect('crtpat')
+        else:
+            user = User.objects.create_user(first_name=fname, last_name='Patient', username=email, email=email)
+            pro = Patient(user=user, phone=phone, gender=gender, age=age, address=add, bloodgroup=bg, casepaper=casepaper, image=image)
+            pro.save()
+            return redirect('reception')
     return render(request, 'Appointments/crtpat.html')
-
 
 @login_required
 def updatepat(request):
