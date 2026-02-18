@@ -28,7 +28,7 @@ SECRET_KEY = config('SECRET_KEY', default='h97=)lhyc$rjg(j#-@rzfxq3sgpi*oj++65!4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["careconnect-4fnd.onrender.com"]
 
 
 # Application definition
