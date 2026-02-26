@@ -30,7 +30,7 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 # DEBUG=True
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://careconnect-9y21.onrender.com',
+    'https://careconnect-9y2l.onrender.com',
 ]
 
 
