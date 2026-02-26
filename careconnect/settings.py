@@ -29,11 +29,10 @@ SECRET_KEY = config('SECRET_KEY', default='h97=)lhyc$rjg(j#-@rzfxq3sgpi*oj++65!4
 DEBUG = config('DEBUG', default=False, cast=bool)
 # DEBUG=True
 
-ALLOWED_HOSTS = config(
-    'ALLOWED_HOSTS',
-    default='localhost,127.0.0.1',
-    cast=lambda v: [s.strip() for s in v.split(',')]
-)
+CSRF_TRUSTED_ORIGINS = [
+    'https://careconnect-9y21.onrender.com',
+]
+
 
 
 # Application definitions
