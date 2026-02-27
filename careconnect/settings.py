@@ -29,8 +29,10 @@ SECRET_KEY = config('SECRET_KEY', default='h97=)lhyc$rjg(j#-@rzfxq3sgpi*oj++65!4
 DEBUG = config('DEBUG', default=False, cast=bool)
 # DEBUG=True
 
-CSRF_TRUSTED_ORIGINS = [
+ALLOWED_HOSTS = [
     'https://careconnect-9y2l.onrender.com',
+    "localhost",
+    "127.0.0.1"
 ]
 
 
@@ -125,7 +127,7 @@ else:
 #             'NAME': 'careconnect',
 #             'USER': 'root',
 #             'PASSWORD': '1234',
-#             'HOST': 'localhost',
+#             'HOST': 'localhost',  
 #             'PORT': '3306',
 #         }
 #     }
@@ -209,6 +211,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #             'HOST': 'localhost',
 #             'PORT': '3306',
 #         }
+
 #     }
 
 
