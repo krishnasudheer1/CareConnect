@@ -7,7 +7,7 @@ from django.utils import timezone
 import datetime
 
 def home(request):
-    return render(request, 'Home/home.html')
+    return render(request, 'home/home.html')
 def logout_view(request):
     logout(request)
     return redirect('Home:home')
@@ -30,7 +30,7 @@ def dashboard(request):
         patient__user=user
     ).count()
 
-    return render(request, "Home/dashboard.html", {
+    return render(request, "home/dashboard.html", {
         "upcoming_count": upcoming_count,
         "past_count": past_count,
         "total_count": total_count
