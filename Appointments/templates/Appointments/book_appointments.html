@@ -1,0 +1,531 @@
+{% extends 'Home/dashboard.html' %}
+{% block content %}
+
+<style>
+.appointment-search{
+    position: relative;
+    max-width: 420px;
+    margin-bottom: 24px;
+}
+.appointment-search i{
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 14px;
+}
+.appointment-search input{
+    width: 100%;
+    padding: 12px 14px 12px 40px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    font-size: 14px;
+}
+
+.doctor-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:24px;
+}
+.doctor-card{
+    background:#fff;
+    border-radius:16px;
+    padding:20px;
+    border:1px solid #e5e7eb;
+}
+.fee{
+    float:right;
+    background:#f1f1f1;
+    padding:4px 10px;
+    border-radius:14px;
+    font-size:13px;
+}
+.info{
+    font-size:14px;
+    margin:6px 0;
+    color:#555;
+}
+
+/* ✅ NEW: AVAILABILITY BOX STYLING */
+.availability-box {
+    background: linear-gradient(135deg, #f0f9ff, #e6f7ff);
+    border-left: 4px solid #0084ff;
+    padding: 12px;
+    margin: 12px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 132, 255, 0.1);
+}
+
+.availability-title {
+    font-size: 12px;
+    color: #0066cc;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.availability-title span {
+    margin-right: 6px;
+    font-size: 14px;
+}
+
+.day-badge {
+    display: inline-block;
+    background: #fff;
+    border: 1px solid #0084ff;
+    color: #0084ff;
+    padding: 4px 10px;
+    margin: 2px 2px 2px 0;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.day-badge:hover {
+    background: #0084ff;
+    color: #fff;
+}
+
+.time-slot {
+    font-size: 12px;
+    color: #333;
+    margin: 4px 0;
+    padding: 4px 0;
+}
+
+.book-btn{
+    margin-top:14px;
+    padding:12px;
+    width:100%;
+    background:#111;
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    justify-content:center;
+    align-items:center;
+    z-index:999;
+}
+.modal-content{
+    background:#fff;
+    padding:24px;
+    width:100%;
+    max-width:420px;
+    border-radius:16px;
+}
+.modal-content label{
+    display:block;
+    margin-top:12px;
+    font-size:14px;
+    font-weight: 600;
+}
+.modal-content input, .modal-content textarea{
+    width:100%;
+    padding:10px;
+    margin-top:4px;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+.modal-content button{
+    margin-top:16px;
+    width:100%;
+    padding:12px;
+    background:#111;
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+.close{
+    float:right;
+    font-size:20px;
+    cursor:pointer;
+}
+
+.time-display{
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 8px;
+    font-size: 14px;
+}
+.time-display strong{
+    color: #15803d;
+}
+</style>
+
+<h1>Book Appointment</h1>
+<p class="welcome">Choose a doctor</p>
+
+<div class="appointment-search">
+    <i class="fa fa-search"></i>
+    <input type="text" id="doctorSearch" placeholder="Search doctor..." onkeyup="filterDoctors()">
+</div>
+
+<div class="doctor-grid">
+
+<!-- ✅ UPDATED: SHOW DYNAMIC DOCTORS WITH AVAILABILITY -->
+{% if doctors %}
+    {% for item in doctors %}
+    {% with doctor=item.doctor availability=item.availability unique_times=item.unique_times %}
+    <div class="doctor-card">
+        <h3>Dr. {{ doctor.user.get_full_name }} 
+            <span class="fee">₹{{ doctor.consultation_fee|default:"500" }}</span>
+        </h3>
+        <div class="info">🩺 {{ doctor.specialty }}</div>
+        <div class="info">📍 {{ doctor.clinic_city|default:"Hyderabad" }}</div>
+        <div class="info">👥 {{ doctor.experience }} years experience</div>
+        
+        <!-- ✅ NEW: AVAILABILITY INFORMATION -->
+        <div class="availability-box">
+            <div class="availability-title">
+                <span>📅</span> Available Days
+            </div>
+            <div>
+                {% if availability %}
+                    {% for slot in availability %}
+                        <span class="day-badge">{{ slot.day }}</span>
+                    {% endfor %}
+                {% else %}
+                    <span style="color: #999; font-size: 12px;">No availability</span>
+                {% endif %}
+            </div>
+            
+            <div class="availability-title" style="margin-top: 10px;">
+                <span>⏰</span> Available Times
+            </div>
+            <div>
+                {% if unique_times %}
+                    {% for slot in unique_times %}
+                        <div class="time-slot">
+                            🕐 {{ slot.time_from|time:"H:i" }} - {{ slot.time_to|time:"H:i" }}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <span style="color: #999; font-size: 12px;">No times available</span>
+                {% endif %}
+            </div>
+        </div>
+        <!-- ✅ END AVAILABILITY SECTION -->
+        
+        <button class="book-btn" onclick="openBooking('Dr. {{ doctor.user.get_full_name }}','{{ doctor.specialty }}')">
+            📅 Book Appointment
+        </button>
+    </div>
+    {% endwith %}
+    {% endfor %}
+{% endif %}
+
+<!-- ✅ MANUAL/FIXED DOCTORS -->
+<div class="doctor-card">
+    <h3>Dr. Priya Sharma <span class="fee">₹700</span></h3>
+    <div class="info">🩺 Dermatologist</div>
+    <div class="info">📍 Hyderabad</div>
+    <div class="info">👥 15 years experience</div>
+    
+    <div class="availability-box">
+        <div class="availability-title"><span>📅</span> Available Days</div>
+        <div>
+            <span class="day-badge">Monday</span>
+            <span class="day-badge">Wednesday</span>
+            <span class="day-badge">Friday</span>
+        </div>
+        
+        <div class="availability-title" style="margin-top: 10px;"><span>⏰</span> Available Times</div>
+        <div>
+            <div class="time-slot">🕐 10:00 - 17:00</div>
+        </div>
+    </div>
+    
+    <button class="book-btn" onclick="openBooking('Dr. Priya Sharma','Dermatologist')">
+        📅 Book Appointment
+    </button>
+</div>
+
+<div class="doctor-card">
+    <h3>Dr. Arjun Reddy <span class="fee">₹900</span></h3>
+    <div class="info">🩺 Orthopedic</div>
+    <div class="info">📍 Hyderabad</div>
+    <div class="info">👥 20 years experience</div>
+    
+    <div class="availability-box">
+        <div class="availability-title"><span>📅</span> Available Days</div>
+        <div>
+            <span class="day-badge">Monday</span>
+            <span class="day-badge">Tuesday</span>
+            <span class="day-badge">Thursday</span>
+            <span class="day-badge">Saturday</span>
+        </div>
+        
+        <div class="availability-title" style="margin-top: 10px;"><span>⏰</span> Available Times</div>
+        <div>
+            <div class="time-slot">🕐 09:00 - 17:00</div>
+        </div>
+    </div>
+    
+    <button class="book-btn" onclick="openBooking('Dr. Arjun Reddy','Orthopedic')">
+        📅 Book Appointment
+    </button>
+</div>
+
+</div>
+
+<!-- ✅ BOOKING MODAL WITH DYNAMIC TIME INPUT -->
+<div id="bookingModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeBooking()">×</span>
+
+    <!-- BOOKING FORM -->
+    <div id="formBox">
+        <h3>Book Appointment</h3>
+        <p><b>Doctor:</b> <span id="docName"></span></p>
+        <p><b>Specialty:</b> <span id="docSpec"></span></p>
+
+        <form id="bookingForm" method="POST" action="{% url 'Appointments:patient_book' %}">
+            {% csrf_token %}
+            <input type="hidden" name="doctor_name" id="doctorInput">
+            <input type="hidden" name="specialty" id="specialtyInput">
+            <input type="hidden" name="time_from" id="timeFromInput">
+
+            <label>Select Date</label>
+            <input type="date" name="date" id="dateInput" required>
+
+            <label>Select Start Time</label>
+            <input type="time" id="userTimeInput" placeholder="e.g., 09:15" required>
+            
+            <!-- ✅ AUTO-CALCULATED END TIME DISPLAY -->
+            <div id="timeDisplay" class="time-display" style="display:none;">
+                <strong>Appointment Duration:</strong><br>
+                <span id="calculatedTime"></span>
+            </div>
+
+            <label style="margin-top:16px;">Reason (Optional)</label>
+            <textarea name="reason" rows="3" placeholder="Reason for appointment..."></textarea>
+
+            <button type="submit" id="confirmBtn">Confirm Appointment</button>
+        </form>
+    </div>
+
+    <!-- ✅ CONFIRMATION MESSAGE -->
+    <div id="confirmBox" style="
+        display:none;
+        text-align:center;
+        padding:32px;
+        border-radius:16px;
+        background:linear-gradient(135deg,#f0fff4,#ecfdf5);
+        box-shadow:0 10px 25px rgba(0,0,0,0.08);
+    ">
+        <div style="
+            width:72px;
+            height:72px;
+            margin:0 auto 16px;
+            border-radius:50%;
+            background:#22c55e;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#fff;
+            font-size:36px;
+            box-shadow:0 8px 20px rgba(34,197,94,0.4);
+        ">
+            ✓
+        </div>
+
+        <h3 style="
+            margin:12px 0 6px;
+            font-size:20px;
+            font-weight:600;
+            color:#065f46;
+        ">
+            Appointment Confirmed
+        </h3>
+
+        <p style="
+            font-size:14px;
+            color:#047857;
+            line-height:1.5;
+            margin-bottom:20px;
+        ">
+            Your appointment has been successfully booked.<br>
+            You can view it anytime in your appointment history.
+        </p>
+
+        <button onclick="closeBooking()" style="
+            padding:10px 18px;
+            border:none;
+            border-radius:10px;
+            background:#16a34a;
+            color:#fff;
+            font-size:14px;
+            cursor:pointer;
+            transition:transform 0.15s ease, box-shadow 0.15s ease;
+            box-shadow:0 6px 14px rgba(22,163,74,0.35);
+        "
+        onmouseover="this.style.transform='translateY(-1px)'"
+        onmouseout="this.style.transform='translateY(0)'"
+        >
+            Done
+        </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+
+// Get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrfToken = getCookie('csrftoken');
+
+function openBooking(name, spec){
+    document.getElementById("bookingModal").style.display="flex";
+    document.getElementById("docName").innerText=name;
+    document.getElementById("docSpec").innerText=spec;
+    document.getElementById("doctorInput").value=name;
+    document.getElementById("specialtyInput").value=spec;
+    
+    // Reset to form view
+    document.getElementById("formBox").style.display="block";
+    document.getElementById("confirmBox").style.display="none";
+    
+    // Reset form
+    document.getElementById("bookingForm").reset();
+    document.getElementById("userTimeInput").value = "";
+    document.getElementById("timeDisplay").style.display = "none";
+}
+
+function closeBooking(){
+    document.getElementById("bookingModal").style.display="none";
+    // Reload page to show updated appointments
+    window.location.reload();
+}
+
+function filterDoctors(){
+    const input = document.getElementById("doctorSearch").value.toLowerCase();
+    const cards = document.getElementsByClassName("doctor-card");
+    for(let i=0; i<cards.length; i++){
+        cards[i].style.display = 
+            cards[i].innerText.toLowerCase().includes(input) ? "" : "none";
+    }
+}
+
+// ✅ AUTO-CALCULATE END TIME WHEN USER ENTERS START TIME
+document.getElementById("userTimeInput").addEventListener("change", function(){
+    const startTime = this.value;
+    
+    if(startTime){
+        // Parse time and add 30 minutes
+        const [hours, minutes] = startTime.split(':');
+        const date = new Date();
+        date.setHours(parseInt(hours));
+        date.setMinutes(parseInt(minutes) + 30);
+        
+        // Format end time
+        const endHours = String(date.getHours()).padStart(2, '0');
+        const endMinutes = String(date.getMinutes()).padStart(2, '0');
+        const endTime = `${endHours}:${endMinutes}`;
+        
+        // Set hidden input
+        document.getElementById("timeFromInput").value = startTime;
+        
+        // Show calculated time
+        document.getElementById("calculatedTime").innerHTML = 
+            `From <strong>${startTime}</strong> to <strong>${endTime}</strong> (30 minutes)`;
+        document.getElementById("timeDisplay").style.display = "block";
+    } else {
+        document.getElementById("timeDisplay").style.display = "none";
+    }
+});
+
+// ✅ FORM SUBMISSION WITH AJAX
+document.getElementById("bookingForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    
+    // Validate time selection
+    if(!document.getElementById("timeFromInput").value){
+        alert("Please select a start time");
+        return;
+    }
+    
+    // Validate date selection
+    if(!document.getElementById("dateInput").value){
+        alert("Please select a date");
+        return;
+    }
+    
+    const formData = new FormData(this);
+    
+    // Show loading state
+    const confirmBtn = document.getElementById("confirmBtn");
+    const originalText = confirmBtn.innerHTML;
+    confirmBtn.innerHTML = "Booking...";
+    confirmBtn.disabled = true;
+    
+    fetch(this.action, {
+        method: 'POST',
+        body: formData,
+        credentials: 'same-origin',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': csrfToken
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(data => {
+                throw new Error(data.error || 'Network response was not ok');
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Response:", data);
+        
+        if(data.success) {
+            // Show confirmation message
+            document.getElementById("formBox").style.display="none";
+            document.getElementById("confirmBox").style.display="block";
+            
+            // Close modal and reload after 2 seconds
+            setTimeout(() => {
+                closeBooking();
+            }, 2000);
+        } else {
+            alert("Error: " + (data.error || "Failed to book appointment"));
+            confirmBtn.innerHTML = originalText;
+            confirmBtn.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error("Fetch error:", error);
+        alert("Error: " + error.message);
+        confirmBtn.innerHTML = originalText;
+        confirmBtn.disabled = false;
+    });
+});
+</script>
+{% endblock %}

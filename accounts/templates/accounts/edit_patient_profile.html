@@ -1,0 +1,331 @@
+{% extends 'home/dashboard.html' %}
+{% block content %}
+
+<style>
+/* ===============================
+   EDIT PROFILE PAGE
+   =============================== */
+
+.profile-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 40px 40px;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    font-family: Arial, Helvetica, sans-serif;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.form-header {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.form-header h2 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.form-header p {
+    margin: 6px 0 0;
+    font-size: 16px;
+    color: #555;
+}
+
+/* Form grid */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.form-grid.full {
+    grid-template-columns: 1fr;
+}
+
+/* Form groups */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #0084ff;
+    box-shadow: 0 0 5px rgba(0, 132, 255, 0.3);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-help {
+    font-size: 12px;
+    color: #999;
+    margin-top: 4px;
+}
+
+/* Errors */
+.errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0 0 0;
+}
+
+.errorlist li {
+    color: #d32f2f;
+    font-size: 12px;
+    padding: 6px 8px;
+    background: #ffebee;
+    border-radius: 4px;
+    border-left: 3px solid #d32f2f;
+}
+
+/* Messages */
+.messages {
+    margin-bottom: 20px;
+}
+
+.alert {
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border-left: 4px solid;
+}
+
+.alert-success {
+    background: #f0fdf4;
+    border-color: #22c55e;
+    color: #15803d;
+}
+
+.alert-error {
+    background: #fef2f2;
+    border-color: #ef4444;
+    color: #991b1b;
+}
+
+/* Buttons */
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 1px solid #eee;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-primary {
+    background: #0084ff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #0066cc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 132, 255, 0.3);
+}
+
+.btn-secondary {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+/* ===============================
+   TABLET
+   =============================== */
+@media (max-width: 992px) {
+    .profile-container {
+        max-width: 95%;
+        padding: 35px 28px;
+    }
+}
+
+/* ===============================
+   MOBILE
+   =============================== */
+@media (max-width: 768px) {
+    .profile-container {
+        max-width: 100%;
+        padding: 30px 20px;
+        margin: 20px auto;
+    }
+
+    .form-header h2 {
+        font-size: 22px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid.full {
+        grid-template-columns: 1fr;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
+</style>
+
+<!-- ✅ MESSAGES SECTION -->
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="profile-container">
+    <!-- Form header -->
+    <div class="form-header">
+        <h2>Edit Your Profile</h2>
+        <p>Update your personal information</p>
+    </div>
+
+    <!-- Edit form -->
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Personal Information -->
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="id_first_name">First Name</label>
+                {{ user_form.first_name }}
+                {% if user_form.first_name.errors %}
+                    {{ user_form.first_name.errors }}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_last_name">Last Name</label>
+                {{ user_form.last_name }}
+                {% if user_form.last_name.errors %}
+                    {{ user_form.last_name.errors }}
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-grid full">
+            <div class="form-group">
+                <label for="id_email">Email Address</label>
+                {{ user_form.email }}
+                {% if user_form.email.errors %}
+                    {{ user_form.email.errors }}
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Patient Details -->
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="id_phone">Phone Number</label>
+                {{ patient_form.phone }}
+                {% if patient_form.phone.errors %}
+                    {{ patient_form.phone.errors }}
+                {% else %}
+                    <div class="form-help">Format: 10 digits (e.g., 9876543210)</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_age">Age</label>
+                {{ patient_form.age }}
+                {% if patient_form.age.errors %}
+                    {{ patient_form.age.errors }}
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="id_gender">Gender</label>
+                {{ patient_form.gender }}
+                {% if patient_form.gender.errors %}
+                    {{ patient_form.gender.errors }}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_bloodgroup">Blood Group</label>
+                {{ patient_form.bloodgroup }}
+                {% if patient_form.bloodgroup.errors %}
+                    {{ patient_form.bloodgroup.errors }}
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Address -->
+        <div class="form-grid full">
+            <div class="form-group">
+                <label for="id_address">Address</label>
+                {{ patient_form.address }}
+                {% if patient_form.address.errors %}
+                    {{ patient_form.address.errors }}
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="action-buttons">
+            <button type="submit" class="btn btn-primary">
+                ✅ Save Changes
+            </button>
+            <a href="{% url 'accounts:patient_profile' %}" class="btn btn-secondary">
+                ❌ Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

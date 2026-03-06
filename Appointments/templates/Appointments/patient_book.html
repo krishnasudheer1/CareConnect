@@ -1,0 +1,42 @@
+<!-- {% extends 'home/dashboard.html' %}
+{% block content %}
+
+<style>
+.form-box{
+    max-width:420px;
+    background:#fff;
+    padding:24px;
+    border-radius:16px;
+    border:1px solid #e5e7eb;
+}
+.form-box input, .form-box button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border-radius:10px;
+}
+.form-box button{
+    background:#111;
+    color:#fff;
+    border:none;
+}
+</style>
+
+    
+<div class="form-box">
+    <p><b>Doctor:</b> {{ doctor.user.first_name }}</p>
+    <p>Specialty: {{ doctor.specialty }}</p>
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Date</label>
+        <input type="date" name="date" required>
+
+        <label>Time</label>
+        <input type="time" name="time" required>
+
+        <button type="submit">✅ Confirm</button>
+    </form>
+</div>
+
+{% endblock %} -->
