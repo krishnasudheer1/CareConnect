@@ -179,14 +179,12 @@ MEDIA_URL = '/media/'
 
 # Email Configuration
 # NEW - CORRECT
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
-EMAIL_PORT = config('EMAIL_PORT', default=465, cast=int)
-EMAIL_USE_SSL = config('EMAIL_USE_SSL', default=True, cast=bool)
-EMAIL_USE_TLS = False
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER')
+# Email Configuration - SendGrid Web API
+# ✅ Email Configuration - SendGrid Web API
+EMAIL_BACKEND = 'sendgrid_backend.SendgridBackend'
+SENDGRID_API_KEY = config('SENDGRID_API_KEY')
+SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='krishnasudheerkommula@gmail.com')
 
 # Login/Logout URLs
 LOGIN_REDIRECT_URL = '/dashboard/'
