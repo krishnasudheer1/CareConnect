@@ -1,0 +1,320 @@
+{% extends 'Home/dashboard.html' %}
+{% block content %}
+
+<style>
+/* ===============================
+   PROFILE PAGE – FULL WIDTH SAFE
+   =============================== */
+
+.profile-container {
+    width: 100%;
+    max-width: 1100px;   /* BIG laptop width */
+    margin: 40px auto;
+    background: #fff;
+    padding: 40px 40px;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    font-family: Arial, Helvetica, sans-serif;
+
+    /* 🔑 prevents text overflow */
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+/* Header */
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: #111;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    font-weight: 700;
+}
+
+/* NAME FIX */
+.profile-header h2 {
+    margin: 0;
+    font-size: 28px;
+    max-width: 100%;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.profile-header p {
+    margin: 6px 0 0;
+    font-size: 16px;
+    color: #555;
+}
+
+/* Profile info grid */
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 35px;
+}
+
+.profile-item span {
+    display: block;
+    font-size: 14px;
+    color: #666;
+}
+
+.profile-item strong {
+    font-size: 16px;
+    color: #111;
+    word-break: break-word;
+}
+
+/* Stats */
+.stats {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.stat-box {
+    flex: 1;
+    background: #f5f5f5;
+    padding: 26px 0;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.stat-box h3 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.stat-box p {
+    margin-top: 6px;
+    font-size: 14px;
+    color: #555;
+}
+
+/* ✅ ACTION BUTTONS */
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    padding-top: 30px;
+    border-top: 1px solid #eee;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-primary {
+    background: #0084ff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #0066cc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 132, 255, 0.3);
+}
+
+.btn-secondary {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+/* Messages */
+.messages {
+    margin-bottom: 20px;
+}
+
+.alert {
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border-left: 4px solid;
+}
+
+.alert-success {
+    background: #f0fdf4;
+    border-color: #22c55e;
+    color: #15803d;
+}
+
+/* ===============================
+   TABLET
+   =============================== */
+@media (max-width: 992px) {
+    .profile-container {
+        max-width: 95%;
+        padding: 35px 28px;
+    }
+}
+
+/* ===============================
+   MOBILE – MORE HEIGHT
+   =============================== */
+@media (max-width: 768px) {
+    .profile-container {
+        max-width: 100%;
+        padding: 40px 20px;
+        margin: 20px auto;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .avatar {
+        width: 85px;
+        height: 85px;
+        font-size: 30px;
+    }
+
+    .profile-header h2 {
+        font-size: 22px;
+        line-height: 1.4;
+    }
+
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats {
+        flex-direction: column;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
+</style>
+
+<!-- ✅ MESSAGES SECTION (NEW) -->
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="avatar">
+            {{ patient.user.first_name|default:"P"|slice:":1" }}
+        </div>
+        <div>
+            <h2>{{ patient.user.get_full_name|default:patient.user.username }}</h2>
+            <p>{{ patient.user.email }}</p>
+        </div>
+    </div>
+
+    <div class="profile-grid">
+        <div class="profile-item">
+            <span>Username</span>
+            <strong>{{ patient.user.username }}</strong>
+        </div>
+        <div class="profile-item">
+            <span>Joined</span>
+            <strong>{{ patient.user.date_joined|date:"d M Y" }}</strong>
+        </div>
+
+        {% if patient.phone %}
+        <div class="profile-item">
+            <span>Phone</span>
+            <strong>{{ patient.phone }}</strong>
+        </div>
+        {% endif %}
+
+        {% if patient.age %}
+        <div class="profile-item">
+            <span>Age</span>
+            <strong>{{ patient.age }}</strong>
+        </div>
+        {% endif %}
+
+        {% if patient.gender %}
+        <div class="profile-item">
+            <span>Gender</span>
+            <strong>{{ patient.gender }}</strong>
+        </div>
+        {% endif %}
+
+        {% if patient.bloodgroup %}
+        <div class="profile-item">
+            <span>Blood Group</span>
+            <strong>{{ patient.bloodgroup }}</strong>
+        </div>
+        {% endif %}
+
+        {% if patient.address %}
+        <div class="profile-item" style="grid-column: 1 / -1;">
+            <span>Address</span>
+            <strong>{{ patient.address }}</strong>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="stats">
+        <div class="stat-box">
+            <h3>{{ total_appointments }}</h3>
+            <p>Total Appointments</p>
+        </div>
+        <div class="stat-box">
+            <h3>
+                {% if latest_appointment %}
+                    {{ latest_appointment.date }}
+                {% else %}
+                    —
+                {% endif %}
+            </h3>
+            <p>Last Appointment</p>
+        </div>
+    </div>
+
+    <!-- ✅ ACTION BUTTONS (NEW) -->
+    <div class="action-buttons">
+        <a href="{% url 'accounts:edit_patient_profile' %}" class="btn btn-primary">
+            ✏️ Edit Profile
+        </a>
+        <a href="{% url 'Appointments:appointment' %}" class="btn btn-secondary">
+            📅 Book Appointment
+        </a>
+    </div>
+</div>
+
+{% endblock %}

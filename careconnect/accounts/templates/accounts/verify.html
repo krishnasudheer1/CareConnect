@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP | CareConnect</title>
+    <link rel="icon" href="https://www.hhaexchange.com/wp-content/uploads/2023/02/CareConnect_LogoRefresh_Final_Stacked_NoTagline-1920x1200.png">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            padding: 40px 35px;
+            max-width: 420px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 26px;
+            color: #222;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .subtext {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Messages */
+        .messages {
+            margin-bottom: 25px;
+        }
+
+        .messages p {
+            padding: 12px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .messages p.error {
+            background: #fee;
+            color: #e74c3c;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .messages p.success {
+            background: #efe;
+            color: #27ae60;
+            border-left: 4px solid #27ae60;
+        }
+
+        /* Form */
+        .form-container {
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            text-align: center;
+            letter-spacing: 4px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #333;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #333;
+            background: #fafafa;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        button {
+            padding: 12px 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-verify {
+            background: #222;
+            color: white;
+        }
+
+        .btn-verify:hover {
+            background: #333;
+        }
+
+        .btn-verify:active {
+            transform: scale(0.98);
+        }
+
+        .btn-resend {
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-resend:hover {
+            background: #e8e8e8;
+        }
+
+        .btn-resend:active {
+            transform: scale(0.98);
+        }
+
+        /* Info Box */
+        .info-box {
+            background: #f8f9fa;
+            padding: 14px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 3px solid #999;
+        }
+
+        .info-box-title {
+            font-weight: 600;
+            color: #333;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .info-box-text {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            input[type="text"] {
+                font-size: 14px;
+                letter-spacing: 3px;
+            }
+
+            button {
+                font-size: 13px;
+                padding: 11px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <h1>Verify OTP</h1>
+        <p class="subtext">Enter the 6-digit code sent to your email</p>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <p class="{% if message.level_tag == 'error' %}error{% else %}success{% endif %}">
+                    {{ message }}
+                </p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- OTP Form -->
+    <div class="form-container">
+        <form method="POST" action="{% url 'accounts:verify_otp' %}">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="otp">OTP Code</label>
+                <input 
+                    type="text" 
+                    id="otp"
+                    name="otp" 
+                    placeholder="000000" 
+                    maxlength="6"
+                    inputmode="numeric"
+                    required
+                    autofocus
+                >
+            </div>
+
+            <!-- Buttons -->
+            <div class="button-group">
+                <button type="submit" class="btn-verify">Verify OTP</button>
+            </div>
+        </form>
+
+        <!-- Resend OTP -->
+        <form method="POST" action="{% url 'accounts:resend_otp' %}">
+            {% csrf_token %}
+            <div class="button-group">
+                <button type="submit" class="btn-resend">Resend OTP</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Info Box -->
+    <div class="info-box">
+        <div class="info-box-title">Didn't receive the code?</div>
+        <div class="info-box-text">
+            Check your spam folder or click "Resend OTP" to get a new one.
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <a href="{% url 'accounts:register' %}">Back to registration</a>
+    </div>
+</div>
+
+<script>
+    // Only allow numbers in OTP input
+    const otpInput = document.getElementById('otp');
+    
+    if (otpInput) {
+        otpInput.addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    }
+</script>
+
+</body>
+</html>

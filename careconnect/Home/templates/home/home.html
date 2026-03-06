@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CareConnect</title>
+    <link rel="icon" href="https://www.hhaexchange.com/wp-content/uploads/2023/02/CareConnect_LogoRefresh_Final_Stacked_NoTagline-1920x1200.png">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, sans-serif;
+        }
+
+        body {
+            background: #ffffff;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 80px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .nav-links a {
+            margin-right: 30px;
+            text-decoration: none;
+            color: #000;
+            font-weight: 500;
+        }
+
+        .nav-actions a {
+            margin-left: 15px;
+            text-decoration: none;
+        }
+
+        .btn-outline {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            color: #000;
+        }
+
+        .btn-dark {
+            padding: 8px 18px;
+            background: #111;
+            color: #fff;
+            border-radius: 10px;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            min-height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 80px;
+            gap: 40px;
+        }
+
+        .left {
+            max-width: 45%;
+        }
+
+        .left h1 {
+            font-size: 60px;
+            line-height: 1.2;
+            margin-bottom: 25px;
+        }
+
+        .left h1 span {
+            color: #2563eb;
+        }
+
+        .left p {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 35px;
+            max-width: 420px;
+        }
+
+        .primary-btn {
+            padding: 14px 28px;
+            background: #111;
+            color: #fff;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .helper-text {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .helper-text a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        /* RIGHT SIDE CARDS (FIXED & RESPONSIVE) */
+        .right {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 420px;
+        }
+
+        .card {
+            border-radius: 22px;
+            position: relative;
+            aspect-ratio: 1 / 1;
+        }
+
+        .card.blue {
+            background: linear-gradient(135deg, #4f8cff, #2563eb);
+        }
+
+        .card.cyan {
+            background: linear-gradient(135deg, #33e3f0, #06b6d4);
+        }
+
+        .card.teal {
+            background: linear-gradient(135deg, #34f0c2, #14b8a6);
+        }
+
+        .icon {
+            width: 50px;
+            height: 30px;
+            background: rgba(0,0,0,0.25);
+            border-radius: 20px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .icon.tall {
+            height: 60px;
+            width: 35px;
+        }
+
+        .icon.double::before,
+        .icon.double::after {
+            content: "";
+            position: absolute;
+            width: 18px;
+            height: 40px;
+            background: rgba(0,0,0,0.25);
+            border-radius: 12px;
+            top: -5px;
+        }
+
+        .icon.double::before {
+            left: -22px;
+        }
+
+        .icon.double::after {
+            right: -22px;
+        }
+
+        /* MOBILE RESPONSIVE */
+        @media (max-width: 900px) {
+            .navbar {
+                padding: 20px;
+            }
+
+            .hero {
+                flex-direction: column;
+                padding: 40px 20px;
+                text-align: center;
+            }
+
+            .left {
+                max-width: 100%;
+            }
+
+            .right {
+                width: 100%;
+                max-width: 360px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="nav-links">
+        <a href="#">Find Doctors</a>
+        <a href="#">Specialities</a>
+        <a href="#">Emergency</a>
+        <a href="#">About</a>
+    </div>
+
+    <div class="nav-actions">
+        <a href="{% url 'Doctors:doctor_register_start' %}" class="btn-outline">Register as Doctor </a>
+        <a href="{% url 'accounts:login' %}" class="btn-dark">Login</a>
+    </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+
+    <!-- LEFT -->
+    <div class="left">
+        <h1>
+            Book <span>Smarter</span><br>
+            Live Better
+        </h1>
+
+        <p>
+            Schedule appointments, reserve services,
+            and manage your bookings all in one place.
+        </p>
+
+        <a href="{% url 'accounts:login' %}" class="primary-btn">
+            Book Appointment
+        </a>
+
+        <div class="helper-text">
+            Need urgent care?
+            <a href="{% url 'accounts:login' %}">Find Emergency Services</a>
+        </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right">
+        <div class="card blue">
+            <div class="icon"></div>
+        </div>
+
+        <div class="card cyan">
+            <div class="icon double"></div>
+        </div>
+
+        <div class="card blue">
+            <div class="icon tall"></div>
+        </div>
+
+        <div class="card teal">
+            <div class="icon"></div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
+
