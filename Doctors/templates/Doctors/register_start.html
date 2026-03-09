@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doctor Registration</title>
+    <link rel="icon" href="https://www.hhaexchange.com/wp-content/uploads/2023/02/CareConnect_LogoRefresh_Final_Stacked_NoTagline-1920x1200.png">
+
+    <style>
+        body { font-family: Arial; background:#fafafa; margin:0; }
+        .container { max-width:1100px; margin:auto; padding:40px; }
+        h1 { text-align:center; }
+        .steps { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-top:40px; }
+        .card {
+            background:#fff; padding:30px; border-radius:12px;
+            box-shadow:0 10px 30px rgba(0,0,0,.08);
+            text-align:center;
+        }
+        .circle {
+            width:40px; height:40px; border-radius:50%;
+            background:#2563eb; color:white;
+            display:flex; align-items:center; justify-content:center;
+            margin:auto; margin-bottom:10px;
+        }
+        .cta {
+            background:#2563eb; color:white;
+            padding:14px 28px; border-radius:8px;
+            text-decoration:none; font-weight:bold;
+        }
+        .cta-wrap { text-align:center; margin-top:50px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Simple Registration Process</h1>
+    <p style="text-align:center;">Get started in just 4 easy steps</p>
+
+    <div class="steps">
+        <div class="card">
+            <div class="circle">1</div>
+            <h3>Create Account</h3>
+            <p>Basic personal details</p>
+        </div>
+        <div class="card">
+            <div class="circle">2</div>
+            <h3>Professional Info</h3>
+            <p>Qualifications & specialization</p>
+        </div>
+        <div class="card">
+            <div class="circle">3</div>
+            <h3>Clinic Details</h3>
+            <p>Location & fees</p>
+        </div>
+        <div class="card">
+            <div class="circle">4</div>
+            <h3>Verification</h3>
+            <p>Upload license & availability</p>
+        </div>
+    </div>
+
+    <div class="cta-wrap">
+        <a href="{% url 'Doctors:doctor_register_step1' %}" class="cta">Start Registration</a>
+    </div>
+</div>
+
+</body>
+</html>
