@@ -30,7 +30,7 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 # DEBUG=True
 
 ALLOWED_HOSTS = [
-    "careconnect-ftlf.onrender.com",
+    "careconnect-1-djyb.onrender.com",
     "localhost",
     "127.0.0.1",
 ]
