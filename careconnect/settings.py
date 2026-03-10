@@ -181,9 +181,16 @@ MEDIA_URL = '/media/'
 # NEW - CORRECT
 # Email Configuration - SendGrid Web API
 # ✅ Email Configuration - SendGrid Web API
-EMAIL_BACKEND = 'sendgrid_backend.SendgridBackend'
-SENDGRID_API_KEY = config('SENDGRID_API_KEY')
-SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+_SENDGRID_API_KEY = config('SENDGRID_API_KEY', default=None)
+
+if _SENDGRID_API_KEY:
+    EMAIL_BACKEND = 'sendgrid_backend.SendgridBackend'
+    SENDGRID_API_KEY = _SENDGRID_API_KEY
+    SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+else:
+    # Fallback: print emails to console if no SendGrid key is configured
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='krishnasudheerkommula@gmail.com')
 
 # Login/Logout URLs
